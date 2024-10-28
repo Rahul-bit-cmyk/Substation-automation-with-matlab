@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        
+        h1 {
+            color: #1a365d;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #2c5282;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #2c5282;
+            font-size: 1.8em;
+            margin-top: 40px;
+            border-left: 5px solid #2c5282;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #2d3748;
+            font-size: 1.4em;
+            margin-top: 25px;
+        }
+        
+        .section {
+            background: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .component-diagram {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        
+        .glossary-term {
+            background: #ebf4ff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        
+        .glossary-term dt {
+            font-weight: bold;
+            color: #2c5282;
+        }
+        
+        .glossary-term dd {
+            margin-left: 20px;
+            color: #4a5568;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+        
+        th {
+            background: #2c5282;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f7fafc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Substation Automation System Simulation Project</h1>
+
+    <div class="section">
+        <h2>1. System Overview</h2>
+        <p>This document outlines the comprehensive simulation of a 132/33 kV substation automation system, implemented using MATLAB/Simulink and conforming to IEC 61850 standards.</p>
+        
+        <!-- SVG Diagram of Basic Substation Layout -->
+        <svg viewBox="0 0 800 400" class="component-diagram">
+            <!-- Power Transformer -->
+            <g transform="translate(350,150)">
+                <circle cx="0" cy="0" r="40" fill="none" stroke="#2c5282" stroke-width="2"/>
+                <circle cx="0" cy="0" r="30" fill="none" stroke="#2c5282" stroke-width="2"/>
+                <text x="0" y="80" text-anchor="middle" fill="#2c5282">Power Transformer</text>
+            </g>
+            
+            <!-- Busbars -->
+            <line x1="100" y1="100" x2="700" y2="100" stroke="#2c5282" stroke-width="4"/>
+            <text x="400" y="80" text-anchor="middle" fill="#2c5282">132kV Busbar</text>
+            
+            <line x1="100" y1="300" x2="700" y2="300" stroke="#2c5282" stroke-width="4"/>
+            <text x="400" y="340" text-anchor="middle" fill="#2c5282">33kV Busbar</text>
+            
+            <!-- Circuit Breakers -->
+            <rect x="340" y="110" width="20" height="30" fill="white" stroke="#2c5282" stroke-width="2"/>
+            <rect x="340" y="260" width="20" height="30" fill="white" stroke="#2c5282" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <div class="section">
+        <h2>2. MATLAB/Simulink Implementation</h2>
+        <h3>2.1 Protection Block</h3>
+        <div class="code-block">
+            <pre>
+function [trip] = differential_protection(i_primary, i_secondary)
+    % Calculate differential current
+    i_diff = abs(i_primary + i_secondary);
+    
+    % Calculate restraint current
+    i_rest = abs(i_primary - i_secondary)/2;
+    
+    % Protection logic
+    if i_diff > 0.2 && i_diff > 0.3*i_rest
+        trip = true;
+    else
+        trip = false;
+    end
+end</pre>
+        </div>
+
+        <h3>2.2 Communication Block</h3>
+        <div class="code-block">
+            <pre>
+% GOOSE Message Configuration
+gooseConfig = struct(...
+    'vlanID', 0, ...
+    'vlanPriority', 4, ...
+    'appID', 1000, ...
+    'macDest', [01 0C CD 01 00 01]);
+            </pre>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>3. System Components</h2>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Description</th>
+                <th>Function</th>
+            </tr>
+            <tr>
+                <td>IED</td>
+                <td>Intelligent Electronic Device</td>
+                <td>Protection and Control</td>
+            </tr>
+            <tr>
+                <td>MU</td>
+                <td>Merging Unit</td>
+                <td>Signal Processing</td>
+            </tr>
+            <tr>
+                <td>SCU</td>
+                <td>Substation Control Unit</td>
+                <td>Central Control</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>4. Protection Schemes</h2>
+        <!-- SVG Protection Zone Diagram -->
+        <svg viewBox="0 0 600 300" class="component-diagram">
+            <!-- Zone 1 -->
+            <circle cx="300" cy="150" r="120" fill="none" stroke="#2c5282" stroke-width="2" stroke-dasharray="5,5"/>
+            <text x="300" y="50" text-anchor="middle" fill="#2c5282">Zone 1 Protection</text>
+            
+            <!-- Zone 2 -->
+            <circle cx="300" cy="150" r="80" fill="none" stroke="#2c5282" stroke-width="2"/>
+            <text x="300" y="100" text-anchor="middle" fill="#2c5282">Zone 2 Protection</text>
+            
+            <!-- Central Equipment -->
+            <rect x="280" y="130" width="40" height="40" fill="white" stroke="#2c5282" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <div class="section">
+        <h2>5. Glossary of Technical Terms</h2>
+        <dl class="glossary-term">
+            <dt>IEC 61850</dt>
+            <dd>International standard for substation communication and automation</dd>
+        </dl>
+        <dl class="glossary-term">
+            <dt>GOOSE</dt>
+            <dd>Generic Object Oriented Substation Event - High-speed communication protocol</dd>
+        </dl>
+        <dl class="glossary-term">
+            <dt>MMS</dt>
+            <dd>Manufacturing Message Specification - Communication protocol for real-time data exchange</dd>
+        </dl>
+        <dl class="glossary-term">
+            <dt>SV (Sampled Values)</dt>
+            <dd>Digital representation of analog current and voltage measurements</dd>
+        </dl>
+    </div>
+
+</body>
+</html>
